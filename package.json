@@ -4,7 +4,9 @@
   "description": "QnA AI web app by ghmeundong",
   "main": "src/server.js",
   "scripts": {
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "deploy": "wrangler deploy",
+    "preview": "wrangler dev"
   },
   "keywords": [
     "node",
@@ -21,5 +23,8 @@
     "express": "^5.2.1",
     "mongodb": "^7.2.0",
     "mongoose": "^9.6.2"
+  },
+  "devDependencies": {
+    "wrangler": "^4.95.0"
   }
 }
