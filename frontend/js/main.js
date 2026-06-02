@@ -107,23 +107,41 @@ function updateMobileView() {
 function adjustLayoutForMobileChrome() {
   if (!("visualViewport" in window)) return;
 
-  let scheduled = null;
+  let lastViewportHeight = window.visualViewport.height;
+  let keyboardActive = false;
+
   const updateChatScroll = () => {
     if (document.activeElement !== userInput) return;
-    if (scheduled) cancelAnimationFrame(scheduled);
-    scheduled = requestAnimationFrame(() => {
-      chatArea.scrollTo({ top: chatArea.scrollHeight, behavior: "smooth" });
-      scheduled = null;
-    });
-  };
+    const viewport = window.visualViewport;
+    if (!viewport) return;
 
-  const delayedUpdate = () => {
-    setTimeout(updateChatScroll, 150);
+    const newHeight = viewport.height;
+    const delta = lastViewportHeight - newHeight;
+    const atBottom = isScrolledToBottom();
+
+    if (delta > 8) {
+      if (atBottom) {
+        chatArea.scrollTo({ top: chatArea.scrollHeight, behavior: "smooth" });
+      } else {
+        chatArea.scrollTop += delta;
+      }
+      keyboardActive = true;
+    } else if (delta < -8) {
+      if (keyboardActive && atBottom) {
+        chatArea.scrollTo({ top: chatArea.scrollHeight, behavior: "smooth" });
+      }
+      keyboardActive = false;
+    }
+
+    lastViewportHeight = newHeight;
   };
 
   userInput?.addEventListener("focus", () => {
-    updateChatScroll();
-    delayedUpdate();
+    lastViewportHeight = window.visualViewport.height;
+  });
+
+  userInput?.addEventListener("blur", () => {
+    keyboardActive = false;
   });
 
   window.visualViewport?.addEventListener("resize", () => {
@@ -595,7 +613,9 @@ switchModeBtn?.addEventListener("click", () => {
 });
 
 userInput.addEventListener("focus", () => {
-  scrollChatToBottom();
+  if (isScrolledToBottom()) {
+    scrollChatToBottom();
+  }
 });
 
 document.addEventListener("DOMContentLoaded", () => {
