@@ -108,29 +108,23 @@ function adjustLayoutForMobileChrome() {
   if (!("visualViewport" in window)) return;
 
   let lastViewportHeight = window.visualViewport.height;
-  let keyboardActive = false;
 
   const updateChatScroll = () => {
-    if (document.activeElement !== userInput) return;
     const viewport = window.visualViewport;
     if (!viewport) return;
 
     const newHeight = viewport.height;
     const delta = lastViewportHeight - newHeight;
-    const atBottom = isScrolledToBottom();
+    if (Math.abs(delta) < 8) {
+      lastViewportHeight = newHeight;
+      return;
+    }
 
-    if (delta > 8) {
-      if (atBottom) {
-        chatArea.scrollTo({ top: chatArea.scrollHeight, behavior: "smooth" });
-      } else {
-        chatArea.scrollTop += delta;
-      }
-      keyboardActive = true;
-    } else if (delta < -8) {
-      if (keyboardActive && atBottom) {
-        chatArea.scrollTo({ top: chatArea.scrollHeight, behavior: "smooth" });
-      }
-      keyboardActive = false;
+    const atBottom = isScrolledToBottom();
+    if (atBottom) {
+      chatArea.scrollTop = chatArea.scrollHeight;
+    } else {
+      chatArea.scrollTop += delta;
     }
 
     lastViewportHeight = newHeight;
@@ -138,15 +132,15 @@ function adjustLayoutForMobileChrome() {
 
   userInput?.addEventListener("focus", () => {
     lastViewportHeight = window.visualViewport.height;
+    setTimeout(updateChatScroll, 50);
   });
 
   userInput?.addEventListener("blur", () => {
-    keyboardActive = false;
+    lastViewportHeight = window.visualViewport.height;
+    setTimeout(updateChatScroll, 50);
   });
 
-  window.visualViewport?.addEventListener("resize", () => {
-    updateChatScroll();
-  });
+  window.visualViewport?.addEventListener("resize", updateChatScroll);
 }
 
 function scrollChatToBottom() {
