@@ -107,16 +107,23 @@ function updateMobileView() {
 function adjustLayoutForMobileChrome() {
   if (!("visualViewport" in window)) return;
 
+  let scheduled = null;
   const updateChatScroll = () => {
-    if (document.activeElement === userInput) {
-      requestAnimationFrame(() => {
-        chatArea.scrollTo({ top: chatArea.scrollHeight, behavior: "smooth" });
-      });
-    }
+    if (document.activeElement !== userInput) return;
+    if (scheduled) cancelAnimationFrame(scheduled);
+    scheduled = requestAnimationFrame(() => {
+      chatArea.scrollTo({ top: chatArea.scrollHeight, behavior: "smooth" });
+      scheduled = null;
+    });
+  };
+
+  const delayedUpdate = () => {
+    setTimeout(updateChatScroll, 150);
   };
 
   userInput?.addEventListener("focus", () => {
     updateChatScroll();
+    delayedUpdate();
   });
 
   window.visualViewport?.addEventListener("resize", () => {
