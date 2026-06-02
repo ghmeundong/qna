@@ -19,14 +19,13 @@ select {
 #chatContainer {
   width: 600px;
   height: 100%;
-
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 #chatArea {
   flex: 1;
-  padding: 15px;
+  padding: 15px 15px 0 15px;
   background: #000;
   display: flex;
   flex-direction: column;
