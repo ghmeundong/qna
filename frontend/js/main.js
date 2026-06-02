@@ -32,6 +32,16 @@ if (!userId) {
   window.location.href = "index.html";
 }
 
+function setViewportHeight() {
+  const vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--vh', `${vh}px`);
+}
+
+setViewportHeight();
+
+window.addEventListener('resize', setViewportHeight);
+
+
 function addMessage(text, className) {
   const msg = document.createElement("div");
   msg.className = "message " + className;
