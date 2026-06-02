@@ -3,9 +3,9 @@
 }
 body {
   margin: 0;
-  height: 100vh;
+  /* height: 100vh; */
   height: 100svh;
-  height: 100dvh;
+  /* height: 100dvh; */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -58,6 +58,7 @@ select {
   display: flex;
   gap: 10px;
   width: 100%;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 #userInput {
   flex: 1;
