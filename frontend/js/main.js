@@ -33,13 +33,15 @@ if (!userId) {
 }
 
 function setViewportHeight() {
-  const vh = window.innerHeight * 0.01;
+  const height = window.visualViewport?.height || window.innerHeight;
+  const vh = height * 0.01;
   document.documentElement.style.setProperty('--vh', `${vh}px`);
 }
 
 setViewportHeight();
 
 window.addEventListener('resize', setViewportHeight);
+window.visualViewport?.addEventListener('resize', setViewportHeight); 
 
 
 function addMessage(text, className) {
@@ -103,33 +105,28 @@ function updateMobileView() {
 }
 
 function adjustLayoutForMobileChrome() {
-  // Prevent jitter when virtual keyboard appears on scroll position
-  if ("visualViewport" in window) {
-    let lastScrollTop = 0;
-    let isKeyboardShowing = false;
-    
-    userInput?.addEventListener("focus", () => {
-      lastScrollTop = chatArea.scrollTop;
-      isKeyboardShowing = true;
-    });
-    
-    userInput?.addEventListener("blur", () => {
-      isKeyboardShowing = false;
-    });
-    
-    window.visualViewport?.addEventListener("resize", () => {
-      if (isKeyboardShowing) {
-        requestAnimationFrame(() => {
-          chatArea.scrollTop = lastScrollTop;
-        });
-      }
-    });
-  }
+  if (!("visualViewport" in window)) return;
+
+  const updateChatScroll = () => {
+    if (document.activeElement === userInput) {
+      requestAnimationFrame(() => {
+        chatArea.scrollTo({ top: chatArea.scrollHeight, behavior: "smooth" });
+      });
+    }
+  };
+
+  userInput?.addEventListener("focus", () => {
+    updateChatScroll();
+  });
+
+  window.visualViewport?.addEventListener("resize", () => {
+    updateChatScroll();
+  });
 }
 
 function scrollChatToBottom() {
   requestAnimationFrame(() => {
-    chatArea.scrollTop = chatArea.scrollHeight;
+    chatArea.scrollTo({ top: chatArea.scrollHeight, behavior: "smooth" });
   });
 }
 
