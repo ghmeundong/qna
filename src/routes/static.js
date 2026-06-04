@@ -7,9 +7,9 @@ function handleStaticFiles(pathname, res) {
   let target = pathname === "/" ? "index.html" : pathname.replace(/^\/+/, "");
   const ext = path.extname(target).toLowerCase();
 
-  // Service worker 파일은 루트에서 그대로 제공합니다.
+  // Service worker 파일은 js 폴더로 이동했지만 루트 경로(/sw.js)도 지원합니다.
   if (pathname === "/sw.js") {
-    target = "sw.js";
+    target = "js/sw.js";
   }
 
   // 파일 확장자에 따라 폴더 분류
