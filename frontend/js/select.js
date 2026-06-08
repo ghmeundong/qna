@@ -57,7 +57,7 @@ async function registerPushNotifications() {
 if (!userId || !role) {
   window.location.href = "index.html";
 } else {
-  const message = `${userId}님, 동은이의 개인 서재에 오신 것을 환영합니다. 동은님 혹은 다른 분들과 대화하시려면 [메신저]를, 저와 대화하시려면 [QnA ai]을 선택해주세요. 단, 게스트 분들은 답변에 제한이 있을 수 있습니다.`;
+  const message = `${userId}님, 환영합니다. 다른 분들과 대화하시려면 [메신저]를, 저와 대화하시려면 [QnA ai]을 선택해주세요. 단, 게스트 분들은 답변에 제한이 있을 수 있습니다.`;
   let index = 0;
   
   function typeMessage() {
