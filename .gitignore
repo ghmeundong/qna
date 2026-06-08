@@ -3,3 +3,9 @@ node_modules/
 
 # 환경 변수
 .env
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example
